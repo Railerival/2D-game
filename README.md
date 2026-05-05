@@ -25,4 +25,3 @@ The hero visits the village head, village head says "all dungeons have their own
 1.Dungeon ground floor inspiration  
 ![\[\[\]\]](ideas.webp)
 
-UNDER DEVELOPMENT

@@ -16,3 +16,5 @@ while True:
     #whole game here
     pygame.display.update()
     clock.tick(60)#-------------frame rate here its 60 fps
+
+#this might go in __init__.py

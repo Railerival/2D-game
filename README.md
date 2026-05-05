@@ -1,27 +1,45 @@
-# 2D game
+#----------------------------------------------UNDER DEVELOPMENT----------------------------------------------#
+=================
+“Game_name“
+=================
 
-Tilesets-`Libresprite`  
-Tilemap -`Tiled `  
-Main modules-`Pygame`,`pytmx` 
+=============
+Requirements:
+=============
 
-### Structure of the game  
+Python 3
+pip install pygame
+pip install pytmx
 
-Village map  
-dungeon ground floor  
-dungeon floor 1(traps)  
-dungeon floor 2(traps)  
-dungeon floor 3(monsters)  
-dungeon floor 4(boss)  
-dungeon floor 5(crop of vitality)  
-village  
+=================
+Running the game:
+=================
 
-### Storyline
+Open a terminal/console/shell, "cd" to the game directory and run the command
 
-A dungeon opens in the village,villagers send a few people to raid it but they return with a disease.
-The hero visits the village head, village head says "all dungeons have their own cures" and the hero raids the dungeon and clears it and finds the cure.
+`python3 run_game.py`
 
-### Inspirations
+================
+Playing the game
+================
 
-1.Dungeon ground floor inspiration  
-![\[\[\]\]](ideas.webp)
+Background Story:
 
+Will update the lore here <--
+
+=======
+Contributors:
+=======
+
+Railerival
+akop-cyber
+
+=======
+Music:
+
+Will update the lore here <--
+
+=======
+Fonts:
+
+Will update the lore here <--

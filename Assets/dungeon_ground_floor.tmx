@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.10" tiledversion="1.12.1" orientation="orthogonal" renderorder="right-down" width="13" height="15" tilewidth="16" tileheight="16" infinite="0" nextlayerid="4" nextobjectid="27">
+ <tileset firstgid="1" source="Dungeon_tileset.tsx"/>
+ <layer id="1" name="Tile Layer 1" width="13" height="15">
+  <data encoding="csv">
+90,90,90,90,90,90,90,90,90,90,90,90,90,
+90,90,90,90,90,90,90,90,90,90,90,90,90,
+90,90,90,90,90,90,90,90,90,90,90,90,90,
+90,90,90,18,24,24,24,24,24,25,90,90,90,
+90,90,90,34,36,37,35,35,35,57,90,90,90,
+90,90,90,50,71,71,54,71,71,57,90,90,90,
+90,90,90,50,71,71,69,71,71,57,90,90,90,
+90,90,90,50,71,71,71,71,71,57,90,90,90,
+90,90,90,50,84,71,71,71,71,57,90,90,90,
+90,90,90,74,93,71,71,71,92,77,90,90,90,
+90,90,90,90,50,71,71,71,57,90,90,90,90,
+90,90,90,90,82,71,71,71,89,90,90,90,90,
+90,90,90,90,74,75,76,75,77,90,90,90,90,
+90,90,90,90,90,90,90,90,90,90,90,90,90,
+90,90,90,90,90,90,90,90,90,90,90,90,90
+</data>
+ </layer>
+ <objectgroup id="3" name="Object Layer 1">
+  <object id="2" gid="115" x="63.227" y="96.136" width="16" height="16"/>
+  <object id="3" gid="115" x="63.409" y="112.045" width="16" height="16"/>
+  <object id="4" gid="115" x="63.5" y="128.136" width="16" height="16"/>
+  <object id="5" gid="115" x="63.318" y="143.682" width="16" height="16"/>
+  <object id="10" gid="114" x="95.5" y="108.682" width="16" height="16"/>
+  <object id="17" gid="115" x="127.045" y="143.591" width="16" height="16"/>
+  <object id="18" gid="115" x="95.045" y="143.682" width="16" height="16"/>
+  <object id="19" gid="115" x="95.136" y="127.773" width="16" height="16"/>
+  <object id="20" gid="115" x="111.136" y="143.5" width="16" height="16"/>
+  <object id="21" gid="115" x="127.409" y="95.591" width="16" height="16"/>
+  <object id="25" gid="106" x="96" y="81" width="16" height="16"/>
+ </objectgroup>
+</map>

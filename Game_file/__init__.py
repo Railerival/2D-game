@@ -4,7 +4,12 @@
 
 import pygame
 import pytmx
+import os
 from sys import exit
+
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+ASSETS_DIR = os.path.join(os.path.dirname(BASE_DIR), "Assets")
 
 pygame.init()
 class Game:
@@ -18,9 +23,13 @@ class Game:
         self.HEIGHT = 600
         self.FPS = 60
         self.SCALE = 3
-        self.current_map = "Assets/Villlage.tmx"
+        #MASTER FILE PATH
+        BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+        ASSETS_DIR = os.path.join(os.path.dirname(BASE_DIR), "Assets")
+        self.current_map = os.path.join(ASSETS_DIR, "Village.tmx")
+        
         self.TILE_SIZE = 48
-        self.PLAYER_SPEED = 10
+        self.PLAYER_SPEED = 8
 
         self.screen = pygame.display.set_mode((self.WIDTH, self.HEIGHT))
         self.clock = pygame.time.Clock()
@@ -29,6 +38,7 @@ class Game:
         self.player = Player(self)
         self.collision_rects = []
         self.door_rects = []
+        self.scaled_tiles = {}
         self.collision()
         self.door()
 
@@ -49,6 +59,8 @@ class Game:
                 self.player.camera_x = door["spawn_x"]
                 self.player.camera_y = door["spawn_y"]
                 EVENT = True
+
+                self.scaled_tiles = {}
 
         return EVENT
 
@@ -74,50 +86,62 @@ class Game:
         """function to make list with door rects, target map of the door, and spawn points of the new map"""
 
         self.door_rects = []
-        for obj in self.tmx_data.get_layer_by_name("Door Layer"):
+        
+        # 🚨 SAFE LOOP: Only looks for the Door Layer if it exists!
+        for layer in self.tmx_data.visible_layers:
+            if layer.name == "Door Layer":
+                
+                for obj in layer:
+                    door_rect = pygame.Rect(
+                    int(obj.x * self.SCALE),
+                    int(obj.y * self.SCALE),
+                    int(obj.width * self.SCALE),
+                    int(obj.height * self.SCALE)
+                    )
+                    target_map = obj.properties["target"]
 
-            door_rect = pygame.Rect(
-            obj.x * self.SCALE,
-            obj.y * self.SCALE,
-            obj.width * self.SCALE,
-            obj.height * self.SCALE
-            )
-            target_map = obj.properties["target"]
+                    if target_map.startswith("Assets/"):
+                        target_map = target_map.replace("Assets/", "")
 
-            spawn_x = obj.properties["spawn_x"]
-            spawn_y = obj.properties["spawn_y"]
+                    if not target_map.endswith(".tmx"):
+                        target_map += ".tmx"
 
-            self.door_rects.append({
-                "rect": door_rect,
-                "target": target_map,
-                "spawn_x": spawn_x,
-                "spawn_y" : spawn_y
-            })
+                    target_map = os.path.join(ASSETS_DIR, target_map)
+
+                    spawn_x = obj.properties["spawn_x"]
+                    spawn_y = obj.properties["spawn_y"]
+
+                    self.door_rects.append({
+                        "rect": door_rect,
+                        "target": target_map,
+                        "spawn_x": spawn_x,
+                        "spawn_y" : spawn_y
+                    })
     
     def draw_map(self)-> None:
 
         """Function to draw the map"""
+        tile_w = self.tmx_data.tilewidth * self.SCALE
+        tile_h = self.tmx_data.tileheight * self.SCALE
 
         for layer in self.tmx_data.visible_layers:
-                    if hasattr(layer, "tiles"):
-                        for x, y, gid in layer:
-                            tile = self.tmx_data.get_tile_image_by_gid(gid)
-                            if tile:
-                                tile = pygame.transform.scale(
-                                    tile,
-                                    (
-                                        self.tmx_data.tilewidth * self.SCALE,
-                                        self.tmx_data.tileheight * self.SCALE
-                                    )
-                                )
-
-                                self.screen.blit(
-                                    tile,
-                                    (
-                                        x * self.tmx_data.tilewidth * self.SCALE + self.player.camera_x,
-                                        y * self.tmx_data.tileheight * self.SCALE + self.player.camera_y
-                                    )
-                                )
+            # 🚨 FIX: Check if the layer actually has tiles to draw!
+            if hasattr(layer, "tiles"):
+                for x, y, gid in layer:
+                    if gid == 0:
+                        continue
+                    if gid not in self.scaled_tiles:
+                        tile = self.tmx_data.get_tile_image_by_gid(gid)
+                        if tile:
+                            self.scaled_tiles[gid] = pygame.transform.scale(tile, (tile_w, tile_h))
+                    if gid in self.scaled_tiles:
+                        self.screen.blit(
+                            self.scaled_tiles[gid],
+                            (
+                                x * tile_w + self.player.camera_x,
+                                y * tile_h + self.player.camera_y
+                            )
+                        )
 
     def main(self)-> None:
 
@@ -168,10 +192,10 @@ class Player:
 
         # Player image loading,resizing,variable for current image and rect for player
         self.PLAYER_SIZE = 48
-        self.player_up = pygame.image.load("Assets/player-up.png").convert_alpha()
-        self.player_down = pygame.image.load("Assets/player-down.png").convert_alpha()
-        self.player_left = pygame.image.load("Assets/player-left.png").convert_alpha()
-        self.player_right = pygame.image.load("Assets/player-right.png").convert_alpha()
+        self.player_up = pygame.image.load(os.path.join(ASSETS_DIR, "player-up.png")).convert_alpha()
+        self.player_down = pygame.image.load(os.path.join(ASSETS_DIR, "player-down.png")).convert_alpha()
+        self.player_left = pygame.image.load(os.path.join(ASSETS_DIR, "player-left.png")).convert_alpha()
+        self.player_right = pygame.image.load(os.path.join(ASSETS_DIR, "player-right.png")).convert_alpha()
         self.player_surf_up = pygame.transform.scale(self.player_up, (self.PLAYER_SIZE, self.PLAYER_SIZE))
         self.player_surf_down = pygame.transform.scale(self.player_down, (self.PLAYER_SIZE, self.PLAYER_SIZE))
         self.player_surf_left = pygame.transform.scale(self.player_left, (self.PLAYER_SIZE, self.PLAYER_SIZE))

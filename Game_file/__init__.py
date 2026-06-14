@@ -87,7 +87,7 @@ class Game:
 
         self.door_rects = []
         
-        # 🚨 SAFE LOOP: Only looks for the Door Layer if it exists!
+        
         for layer in self.tmx_data.visible_layers:
             if layer.name == "Door Layer":
                 
@@ -125,7 +125,7 @@ class Game:
         tile_h = self.tmx_data.tileheight * self.SCALE
 
         for layer in self.tmx_data.visible_layers:
-            # 🚨 FIX: Check if the layer actually has tiles to draw!
+           #added cache system
             if hasattr(layer, "tiles"):
                 for x, y, gid in layer:
                     if gid == 0:

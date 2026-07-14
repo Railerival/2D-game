@@ -29,4 +29,7 @@ The hero visits the village head, village head says "all dungeons have their own
 * d = dungeon
 * f = floor
 
+### Issues
+* Game_settings is used 2 times, shouldnt happen need to pass around
+
 

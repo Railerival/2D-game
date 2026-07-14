@@ -1,234 +1,185 @@
-#----------------------------------------------UNDER DEVELOPMENT----------------------------------------------
-
-# Module is for Main code that works for all maps
-# Dungeon = D, Floor = F
+"""
+MAIN GAME FILE
+Current no.of issues:03
+"""
 
 import pygame
 import pytmx
-from sys import exit
+from pathlib import Path
 
-pygame.init()
+class Assets:#checked
+    """asset path object maker class"""
+    def __init__(self, folder : str, file_name : str) -> None:
+        self.folder = folder
+        self.file_name = file_name
+    def path_obj(self) -> Path:
+        """returns the path object"""
+        self.path_object = Path(self.folder)
+        self.path = self.path_object / self.file_name
+        return self.path
 
-class Player:
-    """A class for the player"""
-    def __init__(self):
+class Game_settings:#checked
+    """ SETTINGS of the game"""
+    def __init__(self) -> None: 
+        self.WINDOW_WIDTH = 800 #windows width
+        self.WINDOW_HEIGHT = 400 #windows height
+        self.TILE_SIZE = 48 #unit tile size of the game
+        self.WINDOW_SIZE = (self.WINDOW_WIDTH, self.WINDOW_HEIGHT) #windows size, tuple
+        self.FPS = 60 #frames per second of the game
+        self.SCALE = 3
+        self.DISPLAY_SURF = pygame.display.set_mode(self.WINDOW_SIZE)
+        pygame.display.set_caption("Panacea")
+        self.clock = pygame.time.Clock()
+
+class Player:#checked
+    """ Player class """
+    def __init__(self) -> None:
+        self.game_settings = Game_settings()#issue 1
+        self.PLAYER_SPEED = 5
+        self.PLAYER_SIZE = 48
+
+        #assets loading and transformation
+        self.player_up = pygame.image.load(Assets("Assets", "player-up.png").path_obj())
+        self.player_down = pygame.image.load(Assets("Assets", "player-down.png").path_obj())
+        self.player_left = pygame.image.load(Assets("Assets", "player-left.png").path_obj())
+        self.player_right = pygame.image.load(Assets("Assets", "player-right.png").path_obj())
+        self.player_surf_up = pygame.transform.scale(self.player_up, (self.PLAYER_SIZE, self.PLAYER_SIZE))
+        self.player_surf_down = pygame.transform.scale(self.player_down, (self.PLAYER_SIZE, self.PLAYER_SIZE))
+        self.player_surf_left = pygame.transform.scale(self.player_left, (self.PLAYER_SIZE, self.PLAYER_SIZE))
+        self.player_surf_right = pygame.transform.scale(self.player_right, (self.PLAYER_SIZE, self.PLAYER_SIZE))
         
-        self.player_img = player_surf_down
-        self.player_rect = self.player_img.get_rect(center = (WIDTH // 2, HEIGHT // 2))
-        self.camera_x = -150
-        self.camera_y = -1050
-        self.x = 0
-        self.y = 0
+        #current player image
+        self.current_player_img = self.player_surf_down
+
+        #player position control and hitbox rect
+        self.player_rect = self.current_player_img.get_rect()
+        self.player_rect.center = (self.game_settings.WINDOW_WIDTH/2, self.game_settings.WINDOW_HEIGHT/2)
         self.hitbox = pygame.Rect(self.player_rect.x + 10,self.player_rect.y + 18,28,28)
 
-    def handle_keys(self):
+    def player_hitbox_move(self, del_x : int, del_y : int) -> None:
+        """move the player hitbox"""
+        self.hitbox = self.hitbox.move(del_x, del_y)
+        
+    def reset_hit_box(self, del_x : int, del_y : int) -> None:
+        """resets the hitbox back to its place"""
+        self.hitbox = self.hitbox.move(-del_x, -del_y)
+
+class Map:#checked but probably has that collision bug
+    """Everything map related"""
+    def __init__(self,  folder : str, file_name : str) -> None:
+        self.tmx_data = pytmx.util_pygame.load_pygame(Assets(folder, file_name).path_obj())
+        self.collision_rects = []
+        self.game_settings = Game_settings()#issue 2
+        
+
+    def collision_rect_maker(self, camera_x : int, camera_y : int) -> None:
+        """makes collision rects"""
+        for layer in self.tmx_data.visible_layers:
+            if layer.name == "Collision layer":
+                for x, y, gid in layer:
+                    if gid != 0:
+                        rect = pygame.Rect(x * self.tmx_data.tilewidth * self.game_settings.SCALE + camera_x, y * self.tmx_data.tileheight * self.game_settings.SCALE + camera_y, self.tmx_data.tilewidth * self.game_settings.SCALE, self.tmx_data.tileheight * self.game_settings.SCALE)
+                        self.collision_rects.append(rect)
+
+    def draw_map(self, camera_x : int, camera_y : int) -> None:
+        """blits the map to the display surface"""
+        for layer in self.tmx_data.visible_layers:
+            if hasattr(layer, "tiles"):
+                for x, y, gid in layer:
+                    tile = self.tmx_data.get_tile_image_by_gid(gid)
+                    if tile:
+                        tile = pygame.transform.scale(tile, (self.tmx_data.tilewidth * self.game_settings.SCALE, self.tmx_data.tileheight * self.game_settings.SCALE))
+                        self.game_settings.DISPLAY_SURF.blit(tile, (x * self.tmx_data.tilewidth * self.game_settings.SCALE + camera_x, y * self.tmx_data.tileheight * self.game_settings.SCALE + camera_y))
+    
+    def del_map_rect(self) -> None:
+        """deletes all the present rects of the map"""
+        self.collision_rects.clear()
+
+class Game:#checked except the main method
+    """ THE GAME CLASS!! """
+    def __init__(self) -> None:
+        pygame.init()
+        self.current_map = "Villlage.tmx"
+        self.camera_x = -200
+        self.camera_y = -1300
+        self.player = Player()
+        self.map = Map("Assets", "Villlage.tmx")
+
+    def handle_keys(self) -> bool:
         """ Handles Keys """
+        key_press = False
         key = pygame.key.get_pressed()
         if key[pygame.K_s] or key[pygame.K_DOWN]:
-            self.camera_y -= PLAYER_SPEED 
-            self.y += PLAYER_SPEED 
-            self.player_img = player_surf_down
+            key_press = True
+            self.camera_y -= self.player.PLAYER_SPEED 
+            self.player.current_player_img = self.player.player_surf_down
+
         if key[pygame.K_w] or key[pygame.K_UP]:
-            self.camera_y += PLAYER_SPEED 
-            self.y -= PLAYER_SPEED 
-            self.player_img = player_surf_up
+            key_press = True
+            self.camera_y += self.player.PLAYER_SPEED 
+            self.player.current_player_img = self.player.player_surf_up
+
         if key[pygame.K_d] or key[pygame.K_RIGHT]:
-            self.camera_x -= PLAYER_SPEED 
-            self.x += PLAYER_SPEED 
-            self.player_img = player_surf_right
+            key_press = True
+            self.camera_x -= self.player.PLAYER_SPEED 
+            self.player.current_player_img = self.player.player_surf_right
+
         if key[pygame.K_a] or key[pygame.K_LEFT]:
-            self.camera_x += PLAYER_SPEED 
-            self.x -= PLAYER_SPEED
-            self.player_img = player_surf_left
+            key_press = True
+            self.camera_x += self.player.PLAYER_SPEED 
+            self.player.current_player_img = self.player.player_surf_left
 
-    def draw(self, surface):
-        """ Draw on surface """
-        # blit yourself at your current position
-        surface.blit(self.player_img, self.player_rect)
-
-    def collision(self):
-
-        # update hitbox position
-        self.hitbox.topleft = (
-            self.player_rect.x + 10,
-            self.player_rect.y + 18
-        )
-
-        future_hitbox = self.hitbox.move(self.x, self.y)
-
-        collision = False
-
-        for rect in collision_rects:
-
-            moved_rect = rect.move(self.camera_x, self.camera_y)
-
-            if future_hitbox.colliderect(moved_rect):
-                collision = True
-                break
-        return collision
-def Door_event(CURRENT_MAP):
-    EVENT = 0
-    for door in doors:
-        moved_rect = door["rect"].move(player.camera_x, player.camera_y)
-
-        if player.player_rect.colliderect(moved_rect):
-
-            CURRENT_MAP[0] = door["target"]
-
-            player.camera_x = door["spawn_x"]
-            player.camera_y = door["spawn_y"]
-            EVENT = 1
-    return EVENT
-
-
+        return key_press
     
+    def main(self) -> None:
+        """ Main function """
+        self.map.collision_rect_maker(self.camera_x, self.camera_y)
+        while True:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    return
+            
+            old_camera_x = self.camera_x
+            old_camera_y = self.camera_y
 
-def code():
-    """Just a function to keep the code DRY"""
-    for layer in tmx_data[0].visible_layers:
-                if hasattr(layer, "tiles"):
-                    for x, y, gid in layer:
-                        tile = tmx_data[0].get_tile_image_by_gid(gid)
-                        if tile:
-                            tile = pygame.transform.scale(
-                                tile,
-                                (
-                                    tmx_data[0].tilewidth * SCALE,
-                                    tmx_data[0].tileheight * SCALE
-                                )
-                            )
+            key_press = self.handle_keys()
+            if key_press:
+                print("key pressed")
+                del_x = self.camera_x - old_camera_x
+                del_y = self.camera_y - old_camera_y
+                print(old_camera_x)
+                print(old_camera_y)
+                print(del_x)
+                print(del_y)
+                self.player.player_hitbox_move(del_x, del_y)
+                check = self.player.hitbox.collidelist(self.map.collision_rects)
+                self.player.reset_hit_box(del_x, del_y)
+                print(check)
+                if check != -1:
+                    #collide
+                    print("collided")
+                    self.camera_x = old_camera_x
+                    self.camera_y = old_camera_y
 
-                            screen.blit(
-                                tile,
-                                (
-                                    x * tmx_data[0].tilewidth * SCALE + player.camera_x,
-                                    y * tmx_data[0].tileheight * SCALE + player.camera_y
-                                )
-                            )
-def display_map():
-    """Logic to display the map"""
-    if FIRST_FRAME == 0:
-        code()
-    else:
-        code()
+                elif check == -1:
+                    #not collide
+                    print("not collided")
+                    for index, rect in enumerate(self.map.collision_rects):
+                        new_rect = rect.move(del_x, del_y)
+                        self.map.collision_rects[index] = new_rect
 
-def main(CURRENT_MAP,tmx_data):
-    """Main code and game loop"""
-    while True:
+            self.map.draw_map(self.camera_x, self.camera_y)
+            self.player.game_settings.DISPLAY_SURF.blit(self.player.current_player_img,self.player.player_rect)
+            
+            #issue 3 : player stuck @ colllision
+            #un comment this if u want to check the rect issue
+            for rect in self.map.collision_rects:
+                pygame.draw.rect(self.player.game_settings.DISPLAY_SURF, (255, 0, 0), rect, 2)
 
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                exit()
+            pygame.display.update()
+            self.player.game_settings.clock.tick(self.player.game_settings.FPS)
+            print("**************************************")
 
-        old_camera_x = player.camera_x
-        old_camera_y = player.camera_y
-
-        player.handle_keys()
-        NOT_COLLIDE = player.collision()
-        if NOT_COLLIDE:
-            player.camera_x = old_camera_x
-            player.camera_y = old_camera_y
-        event = Door_event(CURRENT_MAP)
-        if event == 1:
-            tmx_data[0] = pytmx.load_pygame(CURRENT_MAP[0])
-
-        screen.fill((0, 0, 0))
-        player.x = 0
-        player.y = 0
-
-        # print(player.player_rect.topleft,player.player_rect.topright,player.player_rect.bottomright,player.player_rect.bottomleft)
-
-        # BLTTING AND DRAWING
-        
-        display_map() #To blit the tmx map
-        player.draw(screen) # To blit the player 
-
-        pygame.display.update()
-
-        clock.tick(FPS)
-        FIRST_FRAME = 1
-        print(player.camera_x,player.camera_y)
-        event = 0
-        
-
-# CONSTANTS
-
-WIDTH = 800
-HEIGHT = 600
-FPS = 60
-SCALE = 3
-CURRENT_MAP = ["Assets/Villlage.tmx"]
-TILE_SIZE = 48
-FIRST_FRAME = 0
-PLAYER_SPEED = 5
-
-# WINDOW GENERATION
-
-screen = pygame.display.set_mode((WIDTH, HEIGHT))
-pygame.display.set_caption("Panacea")
-
-# 
-
-clock = pygame.time.Clock()
-
-# LOAD MAP
-
-tmx_data = [pytmx.load_pygame(CURRENT_MAP[0])]
-
-# PLAYER IMAGE LOAD AND RESIZE
-
-PLAYER_SIZE = 48
-
-player_up = pygame.image.load("Assets/player-up.png").convert_alpha()
-player_down = pygame.image.load("Assets/player-down.png").convert_alpha()
-player_left = pygame.image.load("Assets/player-left.png").convert_alpha()
-player_right = pygame.image.load("Assets/player-right.png").convert_alpha()
-
-player_surf_up = pygame.transform.scale(player_up, (PLAYER_SIZE, PLAYER_SIZE))
-player_surf_down = pygame.transform.scale(player_down, (PLAYER_SIZE, PLAYER_SIZE))
-player_surf_left = pygame.transform.scale(player_left, (PLAYER_SIZE, PLAYER_SIZE))
-player_surf_right = pygame.transform.scale(player_right, (PLAYER_SIZE, PLAYER_SIZE))
-
-# COLLISION SYSTEM
-
-collision_rects = []
-
-for layer in tmx_data[0].visible_layers:
-    if layer.name == "Collision layer":
-        for x, y, gid in layer:
-            if gid != 0:
-                rect = pygame.Rect(
-                    x * tmx_data[0].tilewidth * SCALE,
-                    y * tmx_data[0].tileheight * SCALE,
-                    tmx_data[0].tilewidth * SCALE,
-                    tmx_data[0].tileheight * SCALE
-                )
-                collision_rects.append(rect)
-
-doors = []
-for obj in tmx_data[0].get_layer_by_name("Door Layer"):
-
-    door_rect = pygame.Rect(
-        obj.x,
-        obj.y,
-        obj.width,
-        obj.height
-    )
-
-    target_map = obj.properties["target"]
-
-    spawn_x = obj.properties["spawn_x"]
-    spawn_y = obj.properties["spawn_y"]
-
-    doors.append({
-        "rect": door_rect,
-        "target": target_map,
-        "spawn_x": spawn_x,
-        "spawn_y" : spawn_y
-    })
-
-# MAKING A PLAYER OBJECT
-player = Player()
-
-CURRENT_MAP = main(CURRENT_MAP,tmx_data)
+game = Game()
+game.main()

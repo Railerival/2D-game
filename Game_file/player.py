@@ -2,7 +2,7 @@ import pygame
 from . import misc
 from . import game_settings
 
-class Player:#refactored
+class Player:#checked 
     """ Player class """
 
     PLAYER_SPEED = 5

@@ -33,6 +33,6 @@ class Map:#checked but probably has that collision bug
                     tile = self.tmx_data.get_tile_image_by_gid(gid)
                     if tile:
                         tile = pygame.transform.scale(tile, (self.tmx_data.tilewidth * game_settings.SCALE, self.tmx_data.tileheight * game_settings.SCALE))
-                        DISPLAY_SURF.blit(tile, (x * self.tmx_data.tilewidth * game_settings.SCALE + camera_x, y * self.tmx_data.tileheight * game_settings.SCALE + camera_y))
+                        DISPLAY_SURF.blit(tile, ((x * self.tmx_data.tilewidth * game_settings.SCALE + camera_x), (y * self.tmx_data.tileheight * game_settings.SCALE + camera_y)))
     
     

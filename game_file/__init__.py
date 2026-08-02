@@ -7,6 +7,7 @@ import pygame
 from . import game_settings
 from . import player
 from . import map
+from . import misc
 
 class Game:#checked except the main method
     """ THE GAME CLASS!! """
@@ -21,7 +22,7 @@ class Game:#checked except the main method
         self.player = player.Player()
         self.world_map = map.Map()
         self.world_map.load_map(self.current_map)
-        
+        self.collide = False
 
     def handle_keys(self) -> bool:
         """ Handles Keys """
@@ -47,49 +48,48 @@ class Game:#checked except the main method
             self.camera_x += self.player.PLAYER_SPEED 
             player.Player.current_player_img = player.Player.player_surf_left
 
-        return key_press
-    
+        return key_press        
+
     def main(self) -> None:
         """ Main function """
         self.world_map.collision_rect_maker(self.camera_x, self.camera_y)
         while True:
+            self.collide = False
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     return
             
-            old_camera_x = self.camera_x
-            old_camera_y = self.camera_y
-
+            self.old_camera_x = self.camera_x
+            self.old_camera_y = self.camera_y
+            
             key_press = self.handle_keys()
+
             if key_press:
-                print("key pressed")
-                del_x = self.camera_x - old_camera_x
-                del_y = self.camera_y - old_camera_y
-                print(old_camera_x)
-                print(old_camera_y)
-                print(del_x)
-                print(del_y)
+                del_x = -(self.camera_x - self.old_camera_x)
+                del_y = -(self.camera_y - self.old_camera_y)
+        
                 self.player.player_hitbox_move(del_x, del_y)
                 check = player.Player.hitbox.collidelist(self.world_map.collision_rects)
                 self.player.reset_hit_box(del_x, del_y)
-                print(check)
-                if check != -1:
-                    #collide
-                    print("collided")
-                    self.camera_x = old_camera_x
-                    self.camera_y = old_camera_y
-
-                elif check == -1:
-                    #not collide
-                    print("not collided")
+                if check == -1:
+                    self.collide = False
+                else:
+                    self.collide = True
+        
+                if self.collide:
+                    self.camera_x = self.old_camera_x
+                    self.camera_y = self.old_camera_y
+        
+                else:
                     for index, rect in enumerate(self.world_map.collision_rects):
-                        new_rect = rect.move(del_x, del_y)
+                        new_rect = rect.move(-del_x, -del_y)
                         self.world_map.collision_rects[index] = new_rect
 
             self.world_map.draw_map(self.camera_x, self.camera_y, self.DISPLAY_SURF)
-            self.DISPLAY_SURF.blit(self.player.current_player_img,self.player.player_rect)
-            
+            self.DISPLAY_SURF.blit(self.player.current_player_img, self.player.player_rect)
+            misc.display_debug(f"(o_camx = {self.old_camera_x}, o_camy = {self.old_camera_y})")
+            misc.display_debug(f"(camx = {self.camera_x}, camy = {self.camera_y})", y = 35)
             #issue 3 : player stuck @ colllision
             #un comment this if u want to check the rect issue
             for rect in self.world_map.collision_rects:
@@ -97,7 +97,6 @@ class Game:#checked except the main method
             pygame.draw.rect(self.DISPLAY_SURF, (255, 0, 0), player.Player.hitbox, 2)
             pygame.display.update()
             self.clock.tick(game_settings.FPS)
-            print("**************************************")
-
+            
 game = Game()
 game.main()

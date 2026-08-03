@@ -6,6 +6,7 @@ class Map:#checked but probably has that collision bug
     """Everything map related"""
     def __init__(self) -> None:
         self.collision_rects: list[pygame.Rect] = []
+        #self.door_rects: list[pygame.Rect] = {}
         self.tmx_data: pytmx.TiledMap
 
     def load_map(self, mapname: str):
@@ -21,8 +22,27 @@ class Map:#checked but probably has that collision bug
                         rect = pygame.Rect(x * self.tmx_data.tilewidth * game_settings.SCALE + camera_x, y * self.tmx_data.tileheight * game_settings.SCALE + camera_y, self.tmx_data.tilewidth * game_settings.SCALE, self.tmx_data.tileheight * game_settings.SCALE)
                         self.collision_rects.append(rect)
 
+    # def door_rect_maker(self) -> None:
+    #     door_layer = self.tmx_data.get_layer_by_name("Door Layer")
+    #     for obj in door_layer:
+    #         #print(dir(obj))
+    #         left = (obj.x - (obj.width / 2))
+    #         top = (obj.y - (obj.height / 2))
+    #         spawn_coords = (obj.properties["spawn_x"], obj.properties["spawn_y"])
+    #         target_map = obj.properties["target"]
+    #         self.door_rects[pygame.Rect((left, top), (obj.width, obj.height))] = (spawn_coords, target_map)
+    #         # print(obj.x)
+    #         # print(obj.y)
+    #         # print(obj.width)
+    #         # print(obj.height)
+    #         #print(obj.properties) #{'spawn_x': 0, 'spawn_y': 0, 'target': 'Assets/revised_ground_floor_map.tmx'}
+
+    def del_door_rect(self) -> None:
+        """deletes all the present door rects of the map"""
+        self.door_rects.clear()
+
     def del_map_rect(self) -> None:
-        """deletes all the present rects of the map"""
+        """deletes all the present collision rects of the map"""
         self.collision_rects.clear()
         
     def draw_map(self, camera_x : int, camera_y : int, DISPLAY_SURF) -> None:

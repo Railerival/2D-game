@@ -108,42 +108,42 @@
     <property name="target" value="Assets/revised_ground_floor_map.tmx"/>
    </properties>
   </object>
-  <object id="2" x="295.636" y="341.636">
+  <object id="2" x="288.303" y="336.303" width="15.5" height="15.25">
    <properties>
     <property name="spawn_x" type="int" value="0"/>
     <property name="spawn_y" type="int" value="0"/>
     <property name="target" value="house_2"/>
    </properties>
   </object>
-  <object id="3" x="343.818" y="341.818">
+  <object id="3" x="335.818" y="335.818" width="15.5" height="15.25">
    <properties>
     <property name="spawn_x" type="int" value="0"/>
     <property name="spawn_y" type="int" value="0"/>
     <property name="target" value="house_2"/>
    </properties>
   </object>
-  <object id="4" x="407.636" y="453.818">
+  <object id="4" x="399.636" y="448.151" width="15.5" height="15.25">
    <properties>
     <property name="spawn_x" type="int" value="0"/>
     <property name="spawn_y" type="int" value="0"/>
     <property name="target" value="house_3"/>
    </properties>
   </object>
-  <object id="5" x="391.818" y="566">
+  <object id="5" x="384.151" y="559.667" width="15.5" height="15.25">
    <properties>
     <property name="spawn_x" type="int" value="0"/>
     <property name="spawn_y" type="int" value="0"/>
     <property name="target" value="house_4"/>
    </properties>
   </object>
-  <object id="6" x="199.636" y="566">
+  <object id="6" x="191.969" y="560.333" width="15.5" height="15.25">
    <properties>
     <property name="spawn_x" type="int" value="0"/>
     <property name="spawn_y" type="int" value="0"/>
     <property name="target" value="house_5"/>
    </properties>
   </object>
-  <object id="7" x="183.636" y="437.818">
+  <object id="7" x="175.636" y="432.485" width="15.5" height="15.25">
    <properties>
     <property name="spawn_x" type="int" value="0"/>
     <property name="spawn_y" type="int" value="0"/>

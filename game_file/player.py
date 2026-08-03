@@ -18,11 +18,10 @@ class Player:#checked
     player_surf_right = pygame.transform.scale(player_right, (PLAYER_SIZE, PLAYER_SIZE))
     current_player_img = player_surf_down
 
-    #player position control and hitbox rect
-    player_rect = current_player_img.get_rect()
-    player_rect.center = (game_settings.WINDOW_WIDTH/2, game_settings.WINDOW_HEIGHT/2)
-    hitbox = pygame.Rect(game_settings.WINDOW_WIDTH // 2 - PLAYER_SIZE // 2 + 10, game_settings.WINDOW_HEIGHT // 2 - PLAYER_SIZE // 2 + 18, 28, 28)
-    hitbox_centered = hitbox.copy()
+    def __init__(self):
+        self.player_rect = Player.current_player_img.get_rect()
+        self.player_rect.center = (game_settings.WINDOW_WIDTH/2, game_settings.WINDOW_HEIGHT/2)
+        self.hitbox = pygame.Rect(game_settings.WINDOW_WIDTH // 2 - Player.PLAYER_SIZE // 2 + 10, game_settings.WINDOW_HEIGHT // 2 - Player.PLAYER_SIZE // 2 + 18, 28, 28)
     
     def player_hitbox_move(self, del_x : int, del_y : int) -> None:
         """move the player hitbox"""

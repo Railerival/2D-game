@@ -5,7 +5,7 @@ MAIN GAME FILE
 
 import pygame
 from . import game_settings
-from . import player
+from . import entity
 from . import map
 from . import misc
 
@@ -19,7 +19,7 @@ class Game:#checked except the main method
         self.current_map = "Villlage.tmx"
         self.camera_x = -200
         self.camera_y = -1300
-        self.player = player.Player()
+        self.player = entity.Player()
         self.world_map = map.Map()
         self.world_map.load_map(self.current_map)
         self.collide = False
@@ -28,20 +28,20 @@ class Game:#checked except the main method
         """ Handles Keys """
         key = pygame.key.get_pressed()
         if key[pygame.K_s] or key[pygame.K_DOWN]:
-            self.camera_y -= self.player.PLAYER_SPEED 
-            player.Player.current_player_img = player.Player.player_surf_down
+            self.camera_y -= self.player.entity_speed
+            self.player.current_entity_img = self.player.entity_surf_down
 
         if key[pygame.K_w] or key[pygame.K_UP]:
-            self.camera_y += self.player.PLAYER_SPEED 
-            player.Player.current_player_img = player.Player.player_surf_up
+            self.camera_y += self.player.entity_speed 
+            self.player.current_entity_img = self.player.entity_surf_up
 
         if key[pygame.K_d] or key[pygame.K_RIGHT]:
-            self.camera_x -= self.player.PLAYER_SPEED 
-            player.Player.current_player_img = player.Player.player_surf_right
+            self.camera_x -= self.player.entity_speed
+            self.player.current_entity_img = self.player.entity_surf_right
 
         if key[pygame.K_a] or key[pygame.K_LEFT]:
-            self.camera_x += self.player.PLAYER_SPEED 
-            player.Player.current_player_img = player.Player.player_surf_left      
+            self.camera_x += self.player.entity_speed
+            self.player.current_entity_img = self.player.entity_surf_left      
 
     def main(self) -> None:
         """ Main function """
@@ -80,7 +80,7 @@ class Game:#checked except the main method
                     self.world_map.collision_rects[index] = new_rect
 
             self.world_map.draw_map(self.camera_x, self.camera_y, self.DISPLAY_SURF)
-            self.DISPLAY_SURF.blit(self.player.current_player_img, self.player.player_rect)
+            self.DISPLAY_SURF.blit(self.player.current_entity_img, self.player.player_rect)
             misc.display_debug(f"(o_camx = {self.old_camera_x}, o_camy = {self.old_camera_y})")
             misc.display_debug(f"(camx = {self.camera_x}, camy = {self.camera_y})", y = 35)
             misc.display_debug(f"{check=}", y = 60)

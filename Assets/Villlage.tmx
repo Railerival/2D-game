@@ -105,7 +105,7 @@
    <properties>
     <property name="spawn_x" type="int" value="0"/>
     <property name="spawn_y" type="int" value="0"/>
-    <property name="target" value="Assets/revised_ground_floor_map.tmx"/>
+    <property name="target" value="revised_ground_floor_map.tmx"/>
    </properties>
   </object>
   <object id="2" x="288.303" y="336.303" width="15.5" height="15.25">

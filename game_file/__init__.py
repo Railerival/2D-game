@@ -20,7 +20,7 @@ class Game:#checked except the main method
         self.camera_x = -200
         self.camera_y = -1300
         self.player = entity.Player()
-        self.world_map = map.Map()
+        self.world_map = map.Map(self.camera_x, self.camera_y)
         self.world_map.load_map(self.current_map)
         self.collide = False
 
@@ -45,11 +45,12 @@ class Game:#checked except the main method
 
     def main(self) -> None:
         """ Main function """
-        self.world_map.collision_rect_maker(self.camera_x, self.camera_y)
-        #self.world_map.door_rect_maker()
+        self.world_map.create_collision_rects(self.camera_x, self.camera_y)
+        self.world_map.create_doors()
         while True:
-            #self.world_map.door_rect_maker(self.camera_x, self.camera_y, self.current_map)
+            door_event = False
             self.collide = False
+
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
@@ -64,7 +65,18 @@ class Game:#checked except the main method
     
             self.player.player_hitbox_move(del_x, del_y)
             check = self.player.hitbox.collidelist(self.world_map.collision_rects)
+            for door in self.world_map.doors:
+                door_event = self.player.hitbox.colliderect(door.door_rect)
+                if door_event == True:
+                    break
+            print(door_event)
             self.player.reset_hit_box(del_x, del_y)
+
+            if door_event:
+                self.world_map.del_doors()
+                self.world_map.del_map_rect()
+                self.world_map.load_map(door.target_map)
+
             if check == -1:
                 self.collide = False
             else:
@@ -78,18 +90,22 @@ class Game:#checked except the main method
                 for index, rect in enumerate(self.world_map.collision_rects):
                     new_rect = rect.move(-del_x, -del_y)
                     self.world_map.collision_rects[index] = new_rect
+                for door in self.world_map.doors:
+                    door.door_rect = door.door_rect.move(-del_x, -del_y)
 
             self.world_map.draw_map(self.camera_x, self.camera_y, self.DISPLAY_SURF)
             self.DISPLAY_SURF.blit(self.player.current_entity_img, self.player.player_rect)
             misc.display_debug(f"(o_camx = {self.old_camera_x}, o_camy = {self.old_camera_y})")
             misc.display_debug(f"(camx = {self.camera_x}, camy = {self.camera_y})", y = 35)
             misc.display_debug(f"{check=}", y = 60)
-            #issue 3 : player stuck @ colllision
-            #un comment this if u want to check the rect issue
+
+            #un comment this if u want to check the rect drawn
             for rect in self.world_map.collision_rects:
                 pygame.draw.rect(self.DISPLAY_SURF, (255, 0, 0), rect, 2)
             pygame.draw.rect(self.DISPLAY_SURF, (255, 0, 0), self.player.hitbox, 2)
             pygame.display.update()
+            for door in self.world_map.doors:
+                pygame.draw.rect(self.DISPLAY_SURF, (0, 0, 255), door.door_rect, 2)
             self.clock.tick(game_settings.FPS)
             
 game = Game()

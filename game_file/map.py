@@ -6,7 +6,7 @@ from . import game_settings
 class Map:
     def __init__(self, camera_x: int, camera_y: int) -> None:
         self.collision_rects: list[pygame.Rect] = []
-        self.doors: list[pygame.Rect] = []
+        self.doors: list[Door] = []
         self.tmx_data: pytmx.TiledMap
         self.camera_x = camera_x
         self.camera_y = camera_y

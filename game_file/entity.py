@@ -9,10 +9,11 @@ class Entity:
         entity_down_loc: str,
         entity_left_loc: str,
         entity_right_loc: str,
+        entity_speed: int = 5,
+        entity_size: int = 48,
     ):
-
-        self.entity_speed = 5
-        self.entity_size = 48
+        self.entity_speed = entity_speed
+        self.entity_size = entity_size
 
         self.entity_up_img = pygame.image.load(game_settings.ASSETS / entity_up_loc)
         self.entity_down_img = pygame.image.load(game_settings.ASSETS / entity_down_loc)

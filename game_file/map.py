@@ -1,6 +1,6 @@
 import pygame
 import pytmx
-import game_settings
+from . import game_settings
 
 
 class Map:

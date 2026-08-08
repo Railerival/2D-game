@@ -115,5 +115,6 @@ class Game:
             self.clock.tick(game_settings.FPS)
 
 
-game = Game()
-game.main()
+if __name__ == "__main__":
+    game = Game()
+    game.main()

@@ -43,8 +43,8 @@ class Player(Entity):
         )
         self.player_rect = self.current_entity_img.get_rect()
         self.player_rect.center = (
-            game_settings.WINDOW_WIDTH / 2,
-            game_settings.WINDOW_HEIGHT / 2,
+            game_settings.WINDOW_WIDTH // 2,
+            game_settings.WINDOW_HEIGHT // 2,
         )
         self.hitbox = pygame.Rect(
             game_settings.WINDOW_WIDTH // 2 - self.entity_size // 2 + 10,

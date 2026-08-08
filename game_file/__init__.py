@@ -6,7 +6,6 @@ from . import misc
 
 
 class Game:
-
     def __init__(self):
         pygame.init()
         self.DISPLAY_SURF = pygame.display.set_mode(game_settings.WINDOW_SIZE)
@@ -20,9 +19,9 @@ class Game:
         self.world_map.load_map(self.current_map)
         self.collide = False
 
-    def handle_keys(self) -> bool:
+    def handle_keys(self) -> None:
         """Handles Keys - changes the offset and current player image"""
-        
+
         key = pygame.key.get_pressed()
         if key[pygame.K_s] or key[pygame.K_DOWN]:
             self.camera_y -= self.player.entity_speed
@@ -67,7 +66,7 @@ class Game:
 
             for door in self.world_map.doors:
                 door_event = self.player.hitbox.colliderect(door.door_rect)
-                if door_event == True:
+                if door_event:
                     break
 
             self.player.reset_hit_box(del_x, del_y)
@@ -94,10 +93,16 @@ class Game:
                     door.door_rect = door.door_rect.move(-del_x, -del_y)
 
             self.world_map.draw_map(self.camera_x, self.camera_y, self.DISPLAY_SURF)
-            self.DISPLAY_SURF.blit(self.player.current_entity_img, self.player.player_rect)
+            self.DISPLAY_SURF.blit(
+                self.player.current_entity_img, self.player.player_rect
+            )
 
-            misc.display_debug(f"(o_camx = {self.old_camera_x}, o_camy = {self.old_camera_y})")
-            misc.display_debug(f"(camx = {self.camera_x}, camy = {self.camera_y})", y=35)
+            misc.display_debug(
+                f"(o_camx = {self.old_camera_x}, o_camy = {self.old_camera_y})"
+            )
+            misc.display_debug(
+                f"(camx = {self.camera_x}, camy = {self.camera_y})", y=35
+            )
             misc.display_debug(f"{check=}", y=60)
 
             # un comment this if u want to check the rect drawn

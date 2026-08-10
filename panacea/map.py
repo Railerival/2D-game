@@ -1,5 +1,6 @@
 import pygame
 import pytmx
+
 from . import game_settings
 
 
@@ -21,14 +22,7 @@ class Map:
             if layer.name == "Collision layer":
                 for x, y, gid in layer:
                     if gid != 0:
-                        rect = pygame.Rect(
-                            x * self.tmx_data.tilewidth * game_settings.SCALE
-                            + camera_x,
-                            y * self.tmx_data.tileheight * game_settings.SCALE
-                            + camera_y,
-                            self.tmx_data.tilewidth * game_settings.SCALE,
-                            self.tmx_data.tileheight * game_settings.SCALE,
-                        )
+                        rect = pygame.Rect(x * self.tmx_data.tilewidth * game_settings.SCALE+ camera_x, y * self.tmx_data.tileheight * game_settings.SCALE + camera_y, self.tmx_data.tilewidth * game_settings.SCALE, self.tmx_data.tileheight * game_settings.SCALE)
                         self.collision_rects.append(rect)
 
     def create_doors(self) -> None:
@@ -39,9 +33,7 @@ class Map:
             right = obj.y - (obj.height / 2)
             spawn_coords = (obj.properties["spawn_x"], obj.properties["spawn_y"])
             target_map = obj.properties["target"]
-            door = Door(
-                self, left, right, obj.width, obj.height, spawn_coords, target_map
-            )
+            door = Door(self, left, right, obj.width, obj.height, spawn_coords, target_map)
             self.doors.append(door)
 
             # print(dir(obj))
@@ -60,46 +52,18 @@ class Map:
         self.collision_rects.clear()
 
     def draw_map(
-        self, camera_x: int, camera_y: int, DISPLAY_SURF: pygame.Surface
-    ) -> None:
+        self, camera_x: int, camera_y: int, DISPLAY_SURF: pygame.Surface) -> None:
         for layer in self.tmx_data.visible_layers:
             if hasattr(layer, "tiles"):
                 for x, y, gid in layer:
                     tile = self.tmx_data.get_tile_image_by_gid(gid)
                     if tile:
-                        tile = pygame.transform.scale(
-                            tile,
-                            (
-                                self.tmx_data.tilewidth * game_settings.SCALE,
-                                self.tmx_data.tileheight * game_settings.SCALE,
-                            ),
-                        )
-                        DISPLAY_SURF.blit(
-                            tile,
-                            (
-                                (
-                                    x * self.tmx_data.tilewidth * game_settings.SCALE
-                                    + camera_x
-                                ),
-                                (
-                                    y * self.tmx_data.tileheight * game_settings.SCALE
-                                    + camera_y
-                                ),
-                            ),
-                        )
+                        tile = pygame.transform.scale(tile, (self.tmx_data.tilewidth * game_settings.SCALE, self.tmx_data.tileheight * game_settings.SCALE))
+                        DISPLAY_SURF.blit(tile, ((x * self.tmx_data.tilewidth * game_settings.SCALE + camera_x), (y * self.tmx_data.tileheight * game_settings.SCALE + camera_y)))
 
 
 class Door:
-    def __init__(
-        self,
-        map: Map,
-        door_x: int,
-        door_y: int,
-        door_width: int,
-        door_height: int,
-        spawn_coords: tuple,
-        target_map: str,
-    ):
+    def __init__(self,map: Map, door_x: int, door_y: int, door_width: int, door_height: int, spawn_coords: tuple, target_map: str):
 
         self.door_x = door_x
         self.door_y = door_y

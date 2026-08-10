@@ -18,6 +18,7 @@ package-dir = { "panacea" = "src/panacea" }
 packages = ["panacea"]
 
 [tool.pyright]
+extraPaths = ["src"]
 reportUnknownMemberType = false
 reportImportCycles = false
 reportImplicitStringConcatenation = false

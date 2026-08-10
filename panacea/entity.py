@@ -5,6 +5,7 @@ from . import game_settings
 
 class Entity:
     def __init__(self, entity_up_loc: str, entity_down_loc: str, entity_left_loc: str, entity_right_loc: str, entity_speed: int = 5, entity_size: int = 48):
+
         self.entity_speed = entity_speed
         self.entity_size = entity_size
 

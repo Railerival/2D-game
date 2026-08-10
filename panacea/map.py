@@ -1,9 +1,12 @@
+from typing import final
+
 import pygame
 import pytmx
 
 from . import game_settings
 
 
+@final
 class Map:
     def __init__(self, camera_x: int, camera_y: int) -> None:
         self.collision_rects: list[pygame.Rect] = []
@@ -43,8 +46,6 @@ class Map:
             # print(obj.height)
             # print(obj.properties) #{'spawn_x': 0, 'spawn_y': 0, 'target': 'Assets/revised_ground_floor_map.tmx'}
 
-        print(self.doors[0].door_rect)
-
     def del_doors(self) -> None:
         self.doors.clear()
 
@@ -64,7 +65,6 @@ class Map:
 
 class Door:
     def __init__(self,map: Map, door_x: int, door_y: int, door_width: int, door_height: int, spawn_coords: tuple, target_map: str):
-
         self.door_x = door_x
         self.door_y = door_y
         self.door_width = door_width

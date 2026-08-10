@@ -2,6 +2,9 @@ from typing import final
 
 import pygame
 import pytmx
+from pytmx import util_pygame
+from pytmx import TiledObjectGroup
+
 
 from panacea import game_settings
 
@@ -16,7 +19,7 @@ class Map:
         self.camera_y = camera_y
 
     def load_map(self, mapname: str):
-        self.tmx_data = pytmx.util_pygame.load_pygame(game_settings.ASSETS / mapname)
+        self.tmx_data = util_pygame.load_pygame(str(game_settings.ASSETS / mapname))
 
     def create_collision_rects(self, camera_x: int, camera_y: int) -> None:
 
@@ -38,6 +41,7 @@ class Map:
     def create_doors(self) -> None:
         """creates and appends door object to doors list"""
         door_layer = self.tmx_data.get_layer_by_name("Door Layer")
+        assert isinstance(door_layer, TiledObjectGroup)
         for obj in door_layer:
             left = obj.x - (obj.width / 2)
             right = obj.y - (obj.height / 2)

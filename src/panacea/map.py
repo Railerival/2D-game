@@ -2,8 +2,7 @@ from typing import final
 
 import pygame
 import pytmx
-from pytmx import util_pygame
-from pytmx import TiledObjectGroup
+from pytmx import util_pygame, TiledObjectGroup
 
 
 from panacea import game_settings

@@ -48,7 +48,6 @@ class Game:
         self.world_map.create_doors()
 
         while True:
-            door_event = False
             self.collide = False
 
             for event in pygame.event.get():

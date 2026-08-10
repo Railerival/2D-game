@@ -2,7 +2,7 @@ from typing import final
 
 import pygame
 
-from . import entity, game_settings, map, misc
+from panacea import entity, game_settings, map, misc
 
 
 @final
@@ -96,10 +96,16 @@ class Game:
                     door.door_rect = door.door_rect.move(-del_x, -del_y)
 
             self.world_map.draw_map(self.camera_x, self.camera_y, self.DISPLAY_SURF)
-            self.DISPLAY_SURF.blit(self.player.current_entity_img, self.player.player_rect)
+            self.DISPLAY_SURF.blit(
+                self.player.current_entity_img, self.player.player_rect
+            )
 
-            misc.display_debug(f"(o_camx = {self.old_camera_x}, o_camy = {self.old_camera_y})")
-            misc.display_debug(f"(camx = {self.camera_x}, camy = {self.camera_y})", y=35)
+            misc.display_debug(
+                f"(o_camx = {self.old_camera_x}, o_camy = {self.old_camera_y})"
+            )
+            misc.display_debug(
+                f"(camx = {self.camera_x}, camy = {self.camera_y})", y=35
+            )
             misc.display_debug(f"collision {check=}", y=60)
             misc.display_debug("FPS = " + str(self.clock.tick(game_settings.FPS)), y=85)
             # un comment this if u want to check the rect drawn
@@ -109,7 +115,7 @@ class Game:
             pygame.display.update()
             for door in self.world_map.doors:
                 pygame.draw.rect(self.DISPLAY_SURF, (0, 0, 255), door.door_rect, 2)
-                
+
 
 if __name__ == "__main__":
     game = Game()

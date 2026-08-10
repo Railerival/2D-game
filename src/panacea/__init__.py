@@ -1,4 +1,4 @@
-from .main import Game
+from panacea.main import Game
 
 __version__ = "0.1.1"
 

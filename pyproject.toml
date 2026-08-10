@@ -13,8 +13,9 @@ game = "run_game:main"
 package = true
 
 [tool.setuptools]
-py-modules = ["run_game", "game_settings"]
-packages = ["game_file"]
+py-modules = ["run_game"]
+package-dir = { "panacea" = "src/panacea" }
+packages = ["panacea"]
 
 [tool.pyright]
 reportUnknownMemberType = false

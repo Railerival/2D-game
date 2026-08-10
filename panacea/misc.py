@@ -1,10 +1,10 @@
 import pygame
 
-pygame.init()
+_ = pygame.init()
 font = pygame.font.Font(None, 30)
 
 
-def display_debug(info, y=10, x=10):
+def display_debug(info: str, y: int = 10, x: int = 10):
     surface = pygame.display.get_surface()
     text = font.render(str(info), True, "white")
     rect = text.get_rect(topleft=(x, y))

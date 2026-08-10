@@ -1,4 +1,5 @@
 import pygame
+
 from . import game_settings
 
 

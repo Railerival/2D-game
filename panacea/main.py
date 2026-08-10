@@ -1,19 +1,22 @@
+from typing import final
+
 import pygame
-from . import game_settings
-from . import entity
-from . import map
-from . import misc
+
+from . import entity, game_settings, map, misc
 
 
+@final
 class Game:
     def __init__(self):
-        pygame.init()
+        _ = pygame.init()
         self.DISPLAY_SURF = pygame.display.set_mode(game_settings.WINDOW_SIZE)
         pygame.display.set_caption("Panacea")
         self.clock = pygame.time.Clock()
         self.current_map = "Villlage.tmx"
         self.camera_x = -200
         self.camera_y = -1300
+        self.old_camera_x = 0
+        self.old_camera_y = 0
         self.player = entity.Player()
         self.world_map = map.Map(self.camera_x, self.camera_y)
         self.world_map.load_map(self.current_map)
@@ -104,7 +107,7 @@ class Game:
                 f"(camx = {self.camera_x}, camy = {self.camera_y})", y=35
             )
             misc.display_debug(f"{check=}", y=60)
-
+            misc.display_debug("FPS=" + str(self.clock.tick(game_settings.FPS)), y=85)
             # un comment this if u want to check the rect drawn
             for rect in self.world_map.collision_rects:
                 pygame.draw.rect(self.DISPLAY_SURF, (255, 0, 0), rect, 2)
@@ -112,7 +115,6 @@ class Game:
             pygame.display.update()
             for door in self.world_map.doors:
                 pygame.draw.rect(self.DISPLAY_SURF, (0, 0, 255), door.door_rect, 2)
-            self.clock.tick(game_settings.FPS)
 
 
 if __name__ == "__main__":

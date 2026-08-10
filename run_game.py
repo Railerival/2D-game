@@ -2,7 +2,7 @@
 run_game.py - Used to run game
 """
 
-from game_file import Game
+from panacea import Game
 
 
 def main():

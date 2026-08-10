@@ -1,3 +1,4 @@
+from typing import cast
 import pygame
 
 _ = pygame.init()
@@ -6,6 +7,7 @@ font = pygame.font.Font(None, 30)
 
 def display_debug(info: str, y: int = 10, x: int = 10):
     surface = pygame.display.get_surface()
+    surface = cast(pygame.Surface, surface)
     text = font.render(str(info), True, "white")
     rect = text.get_rect(topleft=(x, y))
     pygame.draw.rect(surface, "Black", rect)

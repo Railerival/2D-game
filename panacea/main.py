@@ -48,7 +48,6 @@ class Game:
         self.world_map.create_doors()
 
         while True:
-            door_event = False
             self.collide = False
 
             for event in pygame.event.get():
@@ -68,16 +67,14 @@ class Game:
             check = self.player.hitbox.collidelist(self.world_map.collision_rects)
 
             for door in self.world_map.doors:
-                door_event = self.player.hitbox.colliderect(door.door_rect)
-                if door_event:
+                if self.player.hitbox.colliderect(door.door_rect):
+                    self.player.reset_hit_box(del_x, del_y)
+                    self.world_map.del_doors()
+                    self.world_map.del_map_rect()
+                    self.world_map.load_map(door.target_map)
                     break
-
-            self.player.reset_hit_box(del_x, del_y)
-
-            if door_event:
-                self.world_map.del_doors()
-                self.world_map.del_map_rect()
-                self.world_map.load_map(door.target_map)
+            else:
+                self.player.reset_hit_box(del_x, del_y)
 
             if check == -1:
                 self.collide = False

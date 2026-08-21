@@ -1,12 +1,9 @@
-from typing import final
-
 import pygame
 import pytmx
 
 from . import game_settings
 
 
-@final
 class Map:
     def __init__(self, camera_x: int, camera_y: int) -> None:
         self.collision_rects: list[pygame.Rect] = []

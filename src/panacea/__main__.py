@@ -1,11 +1,8 @@
-from typing import final
-
 import pygame
 
 from . import entity, game_settings, map, misc
 
 
-@final
 class Game:
     def __init__(self):
         _ = pygame.init()

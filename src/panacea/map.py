@@ -1,8 +1,8 @@
 import pygame
+
 import pytmx
 
 from . import game_settings
-
 
 class Map:
     def __init__(self, camera_x: int, camera_y: int) -> None:
@@ -35,7 +35,7 @@ class Map:
             target_map = obj.properties["target"]
             door = Door(self, left, right, obj.width, obj.height, spawn_coords, target_map)
             self.doors.append(door)
-
+            
             # print(dir(obj))
             # print(obj.x)
             # print(obj.y)
@@ -73,4 +73,4 @@ class Door:
             self.door_y * map.tmx_data.tilewidth * game_settings.SCALE + map.camera_y,
             self.door_width,
             self.door_height,
-        )
+        ) #need to check if the door rect is right

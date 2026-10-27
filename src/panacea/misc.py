@@ -1,5 +1,6 @@
 import pygame
 
+pygame.init()
 font = pygame.font.Font(None, 30)
 
 def display_debug(info: str, y: int = 10, x: int = 10):

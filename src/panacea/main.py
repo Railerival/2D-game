@@ -2,7 +2,6 @@ import pygame
 
 from . import entity, game_settings, map, misc
 
-
 class Game:
     def __init__(self):
         _ = pygame.init()
@@ -45,8 +44,6 @@ class Game:
         self.world_map.create_doors()
 
         while True:
-            self.collide = False
-            door_event = False #door_event false
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -72,6 +69,8 @@ class Game:
                     self.current_map = door.target_map #new map assigned
                     self.world_map.load_map(self.current_map) 
                     break
+                else:
+                    door_event = False
             else:
                 self.player.reset_hit_box(del_x, del_y)
 
@@ -100,16 +99,16 @@ class Game:
             misc.display_debug("FPS = " + str(self.clock.tick(game_settings.FPS)), y=85)
             misc.display_debug("door_event = " + str(door_event), y=85)
             if door_event == True:
-                time.sleep(2)
                 misc.display_debug("door_evevnt = " + str(door_event), y=85)
-
+                #time.sleep(2)
+                
             # un comment this if u want to check the rect drawn
             for rect in self.world_map.collision_rects:
                 pygame.draw.rect(self.DISPLAY_SURF, (255, 0, 0), rect, 2)
             pygame.draw.rect(self.DISPLAY_SURF, (255, 0, 0), self.player.hitbox, 2)
             pygame.display.update()
             for door in self.world_map.doors:
-                pygame.draw.rect(self.DISPLAY_SURF, (0, 150, 150), door.door_rect, 2)
+                pygame.draw.rect(self.DISPLAY_SURF, (0, 0, 255), door.door_rect, 2)
                 
 
 if __name__ == "__main__":

@@ -29,11 +29,9 @@ class Map:
         """creates and appends door object to doors list"""
         door_layer = self.tmx_data.get_layer_by_name("Door Layer")
         for obj in door_layer:
-            left = obj.x - (obj.width / 2)
-            right = obj.y - (obj.height / 2)
             spawn_coords = (obj.properties["spawn_x"], obj.properties["spawn_y"])
             target_map = obj.properties["target"]
-            door = Door(self, left, right, obj.width, obj.height, spawn_coords, target_map)
+            door = Door(self, obj.x, obj.y, obj.width, obj.height, spawn_coords, target_map)
             self.doors.append(door)
             
             # print(dir(obj))
@@ -60,7 +58,7 @@ class Map:
                         DISPLAY_SURF.blit(tile, ((x * self.tmx_data.tilewidth * game_settings.SCALE + camera_x), (y * self.tmx_data.tileheight * game_settings.SCALE + camera_y)))
 
 
-class Door:
+class Door:#checked
     def __init__(self,map: Map, door_x: int, door_y: int, door_width: int, door_height: int, spawn_coords: tuple, target_map: str):
         self.door_x = door_x
         self.door_y = door_y
@@ -73,4 +71,4 @@ class Door:
             self.door_y * map.tmx_data.tilewidth * game_settings.SCALE + map.camera_y,
             self.door_width,
             self.door_height,
-        ) #need to check if the door rect is right
+        )
